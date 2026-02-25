@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      // Replace G-XXXXXXXXXX with your actual Measurement ID
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savor | Premium Recipes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #121212;
+            --bg-card: #1e1e1e;
+            --text-light: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --accent: #ff6b6b;
+            --accent-hover: #ff4f4f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .view-section { min-height: 80vh; padding-bottom: 5rem; }
+        
+        /* Navigation */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background-color: rgba(18, 18, 18, 0.95);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #2a2a2a;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent);
+            text-decoration: none; letter-spacing: 1px; cursor: pointer;
+        }
+
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a {
+            color: var(--text-light); text-decoration: none; font-weight: 500;
+            cursor: pointer; transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .search-bar {
+            padding: 0.6rem 1.2rem; border-radius: 25px; border: 1px solid #333;
+            background: #2a2a2a; color: white; outline: none; width: 250px;
+            font-family: 'Poppins', sans-serif; transition: border-color 0.3s;
+        }
+        .search-bar:focus { border-color: var(--accent); }
+
+        /* Home View */
+        .hero {
+            height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), 
+                        url('https://images.unsplash.com/photo-1495521821757-a1efb6729352?ixlib=rb-4.0.3') center/cover;
+            padding: 0 20px;
+        }
+        .hero h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; margin-bottom: 1rem; }
+        .hero p { color: var(--text-muted); margin-bottom: 2rem; max-width: 600px; margin: 0 auto 2rem; }
+        
+        .recipes-section { padding: 5rem 5% 0; }
+        .section-title {
+            font-family: 'Playfair Display', serif; font-size: 2.5rem;
+            border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 2rem;
+        }
+
+        /* Grids */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem; }
+        .card {
+            background-color: var(--bg-card); border-radius: 12px; overflow: hidden;
+            cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .card-img { width: 100%; height: 220px; object-fit: cover; }
+        .card-content { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-category { color: var(--accent); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin: 0.5rem 0; flex-grow: 1; }
+        .card-meta { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem; border-top: 1px solid #333; padding-top: 1rem;}
+        .no-results { grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 3rem; font-size: 1.2rem; }
+
+        /* Detail View */
+        .detail-header { height: 45vh; background-size: cover; background-position: center; position: relative; }
+        .detail-overlay {
+            position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-main) 5%, transparent 90%);
+            display: flex; align-items: flex-end; padding: 3rem 5%;
+        }
+        .detail-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
+        .detail-body { padding: 3rem 5%; display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; }
+        @media (max-width: 768px) { .detail-body { grid-template-columns: 1fr; } }
+        
+        .ingredients-box { background: var(--bg-card); padding: 2rem; border-radius: 12px; height: fit-content; }
+        .ingredients-box h3, .instructions-box h3, .about-text h3 { font-family: 'Playfair Display', serif; color: var(--accent); margin-bottom: 1.5rem; font-size: 1.8rem; }
+        .ingredients-box ul { list-style: none; color: var(--text-light); }
+        .ingredients-box li { margin-bottom: 0.8rem; padding-bottom: 0.8rem; border-bottom: 1px solid #333; display: flex; align-items: center; }
+        .ingredients-box li::before { content: "•"; color: var(--accent); font-size: 1.5rem; margin-right: 10px; }
+        .instructions-box ol { padding-left: 1.5rem; color: var(--text-light); }
+        .instructions-box li { margin-bottom: 2rem; padding-left: 1rem; font-weight: 500; font-size: 1.1rem; }
+        .instructions-box li span { color: var(--text-muted); display: block; font-weight: 400; font-size: 1rem; margin-top: 0.5rem; line-height: 1.7;}
+        
+        .back-btn { display: inline-flex; align-items: center; gap: 0.5rem; margin: 2rem 5%; color: var(--accent); cursor: pointer; font-weight: 600; }
+        .back-btn:hover { color: var(--text-light); }
+
+        /* Categories View */
+        .page-content { padding: 5rem 5%; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+        .cat-card {
+            height: 150px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            background-size: cover; background-position: center; position: relative; cursor: pointer;
+            transition: transform 0.3s; overflow: hidden;
+        }
+        .cat-card:hover { transform: scale(1.03); }
+        .cat-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center; transition: background 0.3s;
+        }
+        .cat-card:hover .cat-overlay { background: rgba(0,0,0,0.3); }
+        .cat-overlay h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; letter-spacing: 2px; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
+
+        /* About View */
+        .about-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 2rem; align-items: center; }
+        @media (max-width: 768px) { .about-container { grid-template-columns: 1fr; } }
+        .about-img { width: 100%; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .about-text p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; line-height: 1.8; }
+        .stats { display: flex; gap: 2rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #333; }
+        .stat-item h4 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--accent); }
+        .stat-item span { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        footer { text-align: center; padding: 2rem; background-color: #0a0a0a; color: var(--text-muted); margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="navigate('home')">Savor.</div>
+        <ul class="nav-links">
+            <li><a onclick="navigate('home')" class="nav-item active" data-target="home">Home</a></li>
+            <li><a onclick="navigate('categories')" class="nav-item" data-target="categories">Categories</a></li>
+            <li><a onclick="navigate('about')" class="nav-item" data-target="about">About</a></li>
+            <li><input type="text" id="search-input" class="search-bar" placeholder="Search recipes, ingredients..."></li>
+        </ul>
+    </header>
+
+    <div id="home-view" class="view-section">
+        <section class="hero">
+            <div>
+                <h1>Master the Art of Cooking</h1>
+                <p>Discover our curated collection of 20 premium, chef-tested recipes tailored for your home kitchen.</p>
+            </div>
+        </section>
+
+        <section class="recipes-section">
+            <h2 class="section-title" id="home-title">All Recipes</h2>
+            <div class="grid" id="recipe-grid"></div>
+        </section>
+    </div>
+
+    <div id="detail-view" class="view-section hidden">
+        <div class="back-btn" onclick="navigate('home')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Recipes
+        </div>
+        <div class="detail-header" id="detail-img">
+            <div class="detail-overlay">
+                <div>
+                    <span class="card-category" id="detail-category"></span>
+                    <h1 class="detail-title" id="detail-title"></h1>
+                </div>
+            </div>
+        </div>
+        <div class="detail-body">
+            <div class="ingredients-box">
+                <h3>Ingredients</h3>
+                <ul id="detail-ingredients"></ul>
+            </div>
+            <div class="instructions-box">
+                <h3>Instructions</h3>
+                <ol id="detail-instructions"></ol>
+            </div>
+        </div>
+    </div>
+
+    <div id="categories-view" class="view-section hidden page-content">
+        <h2 class="section-title">Browse by Category</h2>
+        <div class="category-grid">
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1551183053-bf91a1d81141?ixlib=rb-4.0.3')" onclick="filterFromCategory('Italian')">
+                <div class="cat-overlay"><h3>Italian</h3></div>
+            </div>
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3')" onclick="filterFromCategory('Healthy')">
+                <div class="cat-overlay"><h3>Healthy</h3></div>
+            </div>
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?ixlib=rb-4.0.3')" onclick="filterFromCategory('American')">
+                <div class="cat-overlay"><h3>American</h3></div>
+            </div>
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3')" onclick="filterFromCategory('Asian')">
+                <div class="cat-overlay"><h3>Asian</h3></div>
+            </div>
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1551024601-bec78aea704b?ixlib=rb-4.0.3')" onclick="filterFromCategory('Desserts')">
+                <div class="cat-overlay"><h3>Desserts</h3></div>
+            </div>
+            <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3')" onclick="filterFromCategory('Beverages')">
+                <div class="cat-overlay"><h3>Beverages</h3></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-view" class="view-section hidden page-content">
+        <h2 class="section-title">About Savor</h2>
+        <div class="about-container">
+            <div>
+                <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3" alt="Chef cooking" class="about-img">
+            </div>
+            <div class="about-text">
+                <h3>Our Culinary Mission</h3>
+                <p>Welcome to Savor, a premium digital cookbook crafted for those who believe that cooking is an art form. We step away from cluttered, ad-heavy recipe sites to bring you a clean, professional, and visually striking environment.</p>
+                <p>Every recipe in our database is rigorously tested to ensure flawless results in a home kitchen. Whether you are aiming to master a complex French pastry or looking for the perfect quick weekday dinner, our step-by-step guides are designed for clarity and precision.</p>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <h4>20+</h4>
+                        <span>Premium Recipes</span>
+                    </div>
+                    <div class="stat-item">
+                        <h4>6</h4>
+                        <span>Cuisine Types</span>
+                    </div>
+                    <div class="stat-item">
+                        <h4>100%</h4>
+                        <span>Chef Tested</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Savor Recipes. Crafted for culinary enthusiasts.</p>
+    </footer>
+
+    <script>
+        // Database of 20 Recipes
+        const recipes = [
+            // Italian
+            { id: 1, title: "Wood-Fired Margherita Pizza", category: "Italian", time: "30 Mins", difficulty: "Medium", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3", ingredients: ["Pizza dough", "San Marzano tomatoes", "Fresh mozzarella", "Fresh basil", "Extra virgin olive oil", "Sea salt"], instructions: [{ step: "Preheat Oven", desc: "Heat to 500°F (260°C) with a pizza stone." }, { step: "Shape & Top", desc: "Stretch dough, spread crushed tomatoes." }, { step: "Bake", desc: "Add cheese, bake until blistered. Top with basil." }] },
+            { id: 2, title: "Creamy Spaghetti Carbonara", category: "Italian", time: "20 Mins", difficulty: "Medium", img: "https://images.unsplash.com/photo-1612874742237-642323a62886?ixlib=rb-4.0.3", ingredients: ["1 lb Spaghetti", "4 oz Guanciale", "4 Large egg yolks", "1 cup Pecorino Romano", "Black pepper"], instructions: [{ step: "Cook Pasta", desc: "Boil until al dente. Save pasta water." }, { step: "Crisp Meat", desc: "Crisp guanciale in a pan. Turn off heat." }, { step: "Combine", desc: "Toss pasta, meat, egg yolks, cheese, and pasta water off the heat until creamy." }] },
+            { id: 3, title: "Tuscan Garlic Chicken", category: "Italian", time: "35 Mins", difficulty: "Medium", img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?ixlib=rb-4.0.3", ingredients: ["2 Chicken breasts", "1 cup Heavy cream", "1/2 cup Sun-dried tomatoes", "3 cloves Garlic", "Spinach"], instructions: [{ step: "Sear Chicken", desc: "Season and sear chicken until golden." }, { step: "Make Sauce", desc: "Sauté garlic and tomatoes, add cream and spinach." }, { step: "Simmer", desc: "Return chicken to pan and simmer for 5 mins." }] },
+            
+            // Asian / Asian Fusion
+            { id: 4, title: "Spicy Miso Tonkotsu Ramen", category: "Asian Fusion", time: "45 Mins", difficulty: "Hard", img: "https://images.unsplash.com/photo-1544025162-831105e7daab?ixlib=rb-4.0.3", ingredients: ["Ramen noodles", "Pork broth", "Miso paste", "Chili oil", "Pork belly", "Soft boiled egg", "Green onions"], instructions: [{ step: "Broth", desc: "Simmer broth, whisk in miso and chili oil." }, { step: "Noodles", desc: "Boil noodles and drain." }, { step: "Assemble", desc: "Add noodles to broth, top with pork, egg, and onions." }] },
+            { id: 5, title: "Authentic Pad Thai", category: "Asian", time: "30 Mins", difficulty: "Medium", img: "https://images.unsplash.com/photo-1559314809-0d155014e29e?ixlib=rb-4.0.3", ingredients: ["Rice noodles", "Shrimp or Chicken", "Tamarind paste", "Fish sauce", "Peanuts", "Bean sprouts"], instructions: [{ step: "Prep Noodles", desc: "Soak noodles in warm water until pliable." }, { step: "Stir Fry", desc: "Cook protein, push aside, scramble an egg." }, { step: "Toss", desc: "Add noodles and sauce. Toss with peanuts and sprouts." }] },
+            { id: 6, title: "Spicy Tuna Sushi Rolls", category: "Asian", time: "50 Mins", difficulty: "Hard", img: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3", ingredients: ["Sushi rice", "Nori sheets", "Sashimi-grade tuna", "Sriracha", "Spicy mayo", "Avocado"], instructions: [{ step: "Rice prep", desc: "Cook and season sushi rice with vinegar." }, { step: "Mix Tuna", desc: "Chop tuna and mix with sriracha and mayo." }, { step: "Roll", desc: "Spread rice on nori, add tuna and avocado, roll tightly and slice." }] },
+            { id: 7, title: "Indian Butter Chicken", category: "Asian", time: "50 Mins", difficulty: "Medium", img: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?ixlib=rb-4.0.3", ingredients: ["Chicken thighs", "Heavy cream", "Tomato puree", "Butter", "Garam masala", "Garlic & Ginger"], instructions: [{ step: "Marinate", desc: "Marinate chicken in yogurt and spices, then sear." }, { step: "Sauce", desc: "Simmer tomato puree, butter, and spices." }, { step: "Combine", desc: "Add chicken and cream, simmer until thick." }] },
+
+            // American
+            { id: 8, title: "Classic Smashburger", category: "American", time: "15 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3", ingredients: ["Ground beef (80/20)", "Brioche buns", "American cheese", "Pickles", "Onions", "Burger sauce"], instructions: [{ step: "Prep", desc: "Toast buns, heat a cast-iron skillet until smoking." }, { step: "Smash", desc: "Smash beef balls flat in the pan. Cook 2 mins." }, { step: "Cheese", desc: "Flip, add cheese, cook 1 min. Assemble." }] },
+            { id: 9, title: "Slow-Cooked Texas Brisket", category: "American", time: "12 Hours", difficulty: "Hard", img: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?ixlib=rb-4.0.3", ingredients: ["Whole packer brisket", "Coarse black pepper", "Kosher salt", "Oak wood chunks"], instructions: [{ step: "Trim & Rub", desc: "Trim excess fat. Apply a heavy 50/50 salt and pepper rub." }, { step: "Smoke", desc: "Smoke at 250°F (120°C) for 8 hours." }, { step: "Wrap", desc: "Wrap in butcher paper and cook until tender (203°F internal). Rest 2 hours." }] },
+            { id: 10, title: "Buffalo Chicken Wings", category: "American", time: "45 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1569691899455-88464f6d3cb1?ixlib=rb-4.0.3", ingredients: ["2 lbs Chicken wings", "Baking powder", "Frank's RedHot sauce", "Butter", "Blue cheese dip"], instructions: [{ step: "Bake", desc: "Coat wings in baking powder and salt. Bake at 400°F until crispy." }, { step: "Sauce", desc: "Melt butter and whisk into hot sauce." }, { step: "Toss", desc: "Toss crispy wings in sauce and serve." }] },
+
+            // Healthy / Breakfast
+            { id: 11, title: "Grilled Chicken Caesar", category: "Healthy", time: "25 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3", ingredients: ["Romaine lettuce", "Grilled chicken breast", "Parmesan cheese", "Croutons", "Caesar dressing"], instructions: [{ step: "Prep", desc: "Chop romaine lettuce." }, { step: "Toss", desc: "Toss heavily with Caesar dressing." }, { step: "Assemble", desc: "Top with chicken, croutons, and parmesan." }] },
+            { id: 12, title: "Avocado Toast & Poached Egg", category: "Healthy", time: "10 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?ixlib=rb-4.0.3", ingredients: ["Sourdough bread", "1 Ripe avocado", "2 Eggs", "Chili flakes", "Lemon juice"], instructions: [{ step: "Mash", desc: "Mash avocado with lemon juice and salt." }, { step: "Poach", desc: "Poach eggs in simmering water for 3 minutes." }, { step: "Assemble", desc: "Spread avocado on toasted sourdough, top with egg and chili flakes." }] },
+            { id: 13, title: "Greek Feta Salad", category: "Healthy", time: "15 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3", ingredients: ["Cucumbers", "Cherry tomatoes", "Kalamata olives", "Red onion", "Feta cheese block", "Olive oil"], instructions: [{ step: "Chop", desc: "Dice vegetables uniformly." }, { step: "Dress", desc: "Toss with olive oil, oregano, and red wine vinegar." }, { step: "Top", desc: "Place a large block of feta on top." }] },
+
+            // Desserts
+            { id: 14, title: "Dark Chocolate Brownies", category: "Desserts", time: "40 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?ixlib=rb-4.0.3", ingredients: ["Butter", "Dark chocolate", "Sugar", "Eggs", "Flour", "Cocoa powder", "Sea salt"], instructions: [{ step: "Melt", desc: "Melt butter and chocolate together." }, { step: "Mix", desc: "Whisk eggs and sugar, fold in chocolate, then dry ingredients." }, { step: "Bake", desc: "Bake at 350°F for 25 mins. Top with sea salt." }] },
+            { id: 15, title: "Classic Tiramisu", category: "Desserts", time: "4 Hours", difficulty: "Medium", img: "https://images.unsplash.com/photo-1571115177098-24ec42ed204d?ixlib=rb-4.0.3", ingredients: ["Ladyfingers", "Mascarpone cheese", "Espresso (cold)", "Egg yolks", "Sugar", "Cocoa powder"], instructions: [{ step: "Cream", desc: "Whip egg yolks and sugar, fold in mascarpone." }, { step: "Dip", desc: "Briefly dip ladyfingers in cold espresso." }, { step: "Layer", desc: "Layer ladyfingers and cream. Chill for 4 hours. Dust with cocoa." }] },
+            { id: 16, title: "NY Style Cheesecake", category: "Desserts", time: "6 Hours", difficulty: "Hard", img: "https://images.unsplash.com/photo-1524351199678-941a58a3df50?ixlib=rb-4.0.3", ingredients: ["Graham cracker crumbs", "Cream cheese", "Sugar", "Sour cream", "Eggs", "Vanilla extract"], instructions: [{ step: "Crust", desc: "Press graham crumbs and butter into a springform pan." }, { step: "Batter", desc: "Beat cream cheese and sugar until smooth, add eggs one by one." }, { step: "Bake", desc: "Bake in a water bath at 325°F for 90 mins. Chill overnight." }] },
+
+            // Beverages
+            { id: 17, title: "Classic Lime Mojito", category: "Beverages", time: "5 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?ixlib=rb-4.0.3", ingredients: ["White Rum", "Simple syrup", "Lime", "Mint leaves", "Club soda", "Crushed ice"], instructions: [{ step: "Muddle", desc: "Muddle mint, syrup, and lime wedges in a glass." }, { step: "Add Rum", desc: "Pour in rum and fill with crushed ice." }, { step: "Top", desc: "Top with club soda and stir gently." }] },
+            { id: 18, title: "Dark Espresso Martini", category: "Beverages", time: "5 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1620021614275-296bc0fb9d2a?ixlib=rb-4.0.3", ingredients: ["Vodka", "Coffee Liqueur", "Fresh Espresso", "Simple Syrup", "Coffee beans"], instructions: [{ step: "Brew", desc: "Brew fresh hot espresso." }, { step: "Shake", desc: "Shake vodka, liqueur, syrup, and espresso vigorously with ice." }, { step: "Strain", desc: "Strain into a martini glass. Garnish with 3 beans." }] },
+            { id: 19, title: "Matcha Green Tea Latte", category: "Beverages", time: "10 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1515823662972-da6a2b4d3002?ixlib=rb-4.0.3", ingredients: ["Ceremonial grade matcha", "Hot water", "Oat milk", "Honey"], instructions: [{ step: "Whisk", desc: "Whisk matcha powder with hot (not boiling) water until frothy." }, { step: "Steam", desc: "Steam or froth oat milk." }, { step: "Pour", desc: "Pour milk over the matcha, sweeten with honey." }] },
+            { id: 20, title: "Classic Margarita", category: "Beverages", time: "5 Mins", difficulty: "Easy", img: "https://images.unsplash.com/photo-1560512823-829485b8bf24?ixlib=rb-4.0.3", ingredients: ["Blanco Tequila", "Fresh lime juice", "Agave syrup", "Orange liqueur (Cointreau)", "Salt (for rim)"], instructions: [{ step: "Prep Glass", desc: "Rub a lime wedge on the rim and dip in salt." }, { step: "Shake", desc: "Shake tequila, lime juice, agave, and Cointreau with ice." }, { step: "Serve", desc: "Strain over fresh ice in the salted glass." }] }
+        ];
+
+        // Core Functions
+        const grid = document.getElementById('recipe-grid');
+        const homeTitle = document.getElementById('home-title');
+        const searchInput = document.getElementById('search-input');
+        
+        function renderRecipes(recipeArray) {
+            grid.innerHTML = ''; 
+            if (recipeArray.length === 0) {
+                grid.innerHTML = '<div class="no-results">No recipes found. Try a different search.</div>';
+                return;
+            }
+            recipeArray.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openRecipe(recipe.id);
+                card.innerHTML = `
+                    <img src="${recipe.img}" alt="${recipe.title}" class="card-img">
+                    <div class="card-content">
+                        <span class="card-category">${recipe.category}</span>
+                        <h3 class="card-title">${recipe.title}</h3>
+                        <div class="card-meta">
+                            <span>⏱ ${recipe.time}</span>
+                            <span>🔥 ${recipe.difficulty}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Logic
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            if(document.getElementById('home-view').classList.contains('hidden')) navigate('home');
+            
+            homeTitle.innerText = term ? `Search Results for "${e.target.value}"` : "All Recipes";
+            
+            const filtered = recipes.filter(r => 
+                r.title.toLowerCase().includes(term) || 
+                r.category.toLowerCase().includes(term) || 
+                r.ingredients.some(i => i.toLowerCase().includes(term))
+            );
+            renderRecipes(filtered);
+        });
+
+        // Filter from Categories Page
+        function filterFromCategory(category) {
+            searchInput.value = category;
+            homeTitle.innerText = `${category} Recipes`;
+            navigate('home');
+            const filtered = recipes.filter(r => r.category.toLowerCase().includes(category.toLowerCase()));
+            renderRecipes(filtered);
+        }
+
+        // Navigation with Google Analytics Page View Tracking
+        function navigate(viewId) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`${viewId}-view`).classList.remove('hidden');
+            const activeLink = document.querySelector(`[data-target="${viewId}"]`);
+            if(activeLink) activeLink.classList.add('active');
+            
+            if(viewId !== 'home') {
+                searchInput.value = '';
+                homeTitle.innerText = "All Recipes";
+                renderRecipes(recipes); 
+            }
+            window.scrollTo(0, 0);
+
+            // Send page view event to GA4
+            if (typeof gtag === 'function') {
+                gtag('event', 'page_view', {
+                    page_title: viewId.charAt(0).toUpperCase() + viewId.slice(1),
+                    page_location: window.location.href + '#' + viewId,
+                    page_path: '/' + viewId
+                });
+            }
+        }
+
+        // Open Recipe Detail
+        function openRecipe(id) {
+            const recipe = recipes.find(r => r.id === id);
+            document.getElementById('detail-img').style.backgroundImage = `url('${recipe.img}')`;
+            document.getElementById('detail-category').innerText = recipe.category;
+            document.getElementById('detail-title').innerText = recipe.title;
+            document.getElementById('detail-ingredients').innerHTML = recipe.ingredients.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('detail-instructions').innerHTML = recipe.instructions.map(i => `<li><strong>${i.step}</strong><span>${i.desc}</span></li>`).join('');
+            
+            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+            document.getElementById('detail-view').classList.remove('hidden');
+            window.scrollTo(0, 0);
+
+            // Send recipe detail view event to GA4
+            if (typeof gtag === 'function') {
+                gtag('event', 'page_view', {
+                    page_title: 'Recipe: ' + recipe.title,
+                    page_location: window.location.href + '#recipe-' + recipe.id,
+                    page_path: '/recipe/' + recipe.id
+                });
+            }
+        }
+
+        // Init
+        renderRecipes(recipes);
+    </script>
+</body>
+</html>
